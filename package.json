@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "vercel-build": "npx prisma generate --data-proxy && next build",
-    "prisma:generate": "PRISMA_CLIENT_ENGINE_TYPE=\"dataproxy\" prisma generate"
+    "prisma:generate": "npx prisma generate --data-proxy"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

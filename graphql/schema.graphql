@@ -28,6 +28,7 @@ type PageInfo {
 
 type Query {
   links(after: String, first: Int): Response
+  me: User
 }
 
 type Response {

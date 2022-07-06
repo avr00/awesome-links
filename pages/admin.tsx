@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { gql, useMutation } from '@apollo/client';
 import toast, { Toaster } from 'react-hot-toast';
+import { getSession } from '@auth0/nextjs-auth0';
 
 const CreateLinkMutation = gql`
   mutation (
@@ -162,6 +163,24 @@ const Admin = () => {
       </form>
     </div>
   );
+};
+
+export const getServerSideProps = async ({ req, res }) => {
+  const session = getSession(req, res);
+
+  if (!session) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/api/auth/login'
+      },
+      props: {}
+    };
+  }
+
+  return {
+    props: {}
+  };
 };
 
 export default Admin;
