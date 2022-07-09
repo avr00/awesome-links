@@ -1,23 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
-import { useUser } from '@auth0/nextjs-auth0';
-import { gql, useQuery } from '@apollo/client';
-
-const Me = gql`
-  query me {
-    me {
-      id
-      name
-      role
-    }
-  }
-`;
+import { useSession } from 'next-auth/react';
+import { useMeQuery } from '../../src/generated/graphql';
 
 const Header = () => {
-  const { user } = useUser();
-  const { data } = useQuery(Me);
+  const { data } = useMeQuery();
+  const { data: session } = useSession();
 
   const isAdmin = data?.me?.role === 'ADMIN';
+
+  const user = session?.user;
 
   return (
     <header className='text-gray-600 body-font'>
@@ -42,7 +34,7 @@ const Header = () => {
         </Link>
         <nav className='md:ml-auto flex flex-wrap items-center text-base justify-center'>
           {user && isAdmin && (
-            <div className='flex itemx-center justify-center mr-5 capitalize bg-blue-500 py-1 px-3 rounded-md text-white'>
+            <div className='flex items-center justify-center mr-5 capitalize bg-blue-500 py-1 px-3 rounded-md text-white'>
               <Link href='/admin'>
                 <a>+ Create</a>
               </Link>
@@ -64,7 +56,7 @@ const Header = () => {
               <img
                 alt='profile'
                 className='rounded-full w-12 h-12'
-                src={user.picture}
+                src={user.image}
               />
             </div>
           ) : (

@@ -1,32 +1,10 @@
 import Head from 'next/head';
-import { gql, useQuery } from '@apollo/client';
-import { addApolloState, initializeApollo } from '../lib/apollo';
-import { AwesomeLink } from '../components/AwesomeLink';
-
-const ALL_LINKS_QUERY = gql`
-  query allLinksQuery($first: Int, $after: String) {
-    links(first: $first, after: $after) {
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
-      edges {
-        cursor
-        node {
-          id
-          imageUrl
-          title
-          description
-          url
-          category
-        }
-      }
-    }
-  }
-`;
+import { addApolloState, initializeApollo } from '../../lib/apollo';
+import { AwesomeLink } from '../../components/AwesomeLink';
+import { LinksDocument, useLinksQuery } from '../generated/graphql';
 
 export default function Home() {
-  const { data, loading, error, fetchMore } = useQuery(ALL_LINKS_QUERY, {
+  const { data, loading, error, fetchMore } = useLinksQuery({
     variables: {
       first: 2
     }
@@ -90,7 +68,7 @@ export async function getServerSideProps() {
   const apolloClient = initializeApollo();
 
   await apolloClient.query({
-    query: ALL_LINKS_QUERY,
+    query: LinksDocument,
     variables: {
       first: 2
     }

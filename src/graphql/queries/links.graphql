@@ -1,0 +1,19 @@
+  query links($first: Int, $after: String) {
+    links(first: $first, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        cursor
+        node {
+          id
+          imageUrl
+          title
+          description
+          url
+          category
+        }
+      }
+    }
+  }
