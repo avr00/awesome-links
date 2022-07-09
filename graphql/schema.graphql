@@ -8,6 +8,7 @@ type Edge {
 }
 
 type Link {
+  anything: String
   category: String
   description: String
   id: String
