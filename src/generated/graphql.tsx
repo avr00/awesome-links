@@ -85,6 +85,17 @@ export type User = {
   role?: Maybe<Role>;
 };
 
+export type CreateLinkMutationVariables = Exact<{
+  title: Scalars['String'];
+  url: Scalars['String'];
+  imageUrl: Scalars['String'];
+  category: Scalars['String'];
+  description: Scalars['String'];
+}>;
+
+
+export type CreateLinkMutation = { __typename?: 'Mutation', createLink: { __typename?: 'Link', title?: string | null, url?: string | null, imageUrl?: string | null, category?: string | null, description?: string | null } };
+
 export type LinksQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
   after?: InputMaybe<Scalars['String']>;
@@ -99,6 +110,53 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id?: string | null, name?: string | null, role?: Role | null } | null };
 
 
+export const CreateLinkDocument = gql`
+    mutation createLink($title: String!, $url: String!, $imageUrl: String!, $category: String!, $description: String!) {
+  createLink(
+    title: $title
+    url: $url
+    imageUrl: $imageUrl
+    category: $category
+    description: $description
+  ) {
+    title
+    url
+    imageUrl
+    category
+    description
+  }
+}
+    `;
+export type CreateLinkMutationFn = Apollo.MutationFunction<CreateLinkMutation, CreateLinkMutationVariables>;
+
+/**
+ * __useCreateLinkMutation__
+ *
+ * To run a mutation, you first call `useCreateLinkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateLinkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createLinkMutation, { data, loading, error }] = useCreateLinkMutation({
+ *   variables: {
+ *      title: // value for 'title'
+ *      url: // value for 'url'
+ *      imageUrl: // value for 'imageUrl'
+ *      category: // value for 'category'
+ *      description: // value for 'description'
+ *   },
+ * });
+ */
+export function useCreateLinkMutation(baseOptions?: Apollo.MutationHookOptions<CreateLinkMutation, CreateLinkMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateLinkMutation, CreateLinkMutationVariables>(CreateLinkDocument, options);
+      }
+export type CreateLinkMutationHookResult = ReturnType<typeof useCreateLinkMutation>;
+export type CreateLinkMutationResult = Apollo.MutationResult<CreateLinkMutation>;
+export type CreateLinkMutationOptions = Apollo.BaseMutationOptions<CreateLinkMutation, CreateLinkMutationVariables>;
 export const LinksDocument = gql`
     query links($first: Int, $after: String) {
   links(first: $first, after: $after) {

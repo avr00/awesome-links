@@ -1,41 +1,21 @@
 import React from 'react';
-import { getSession } from 'next-auth/react'
+import { getSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
-import { gql, useMutation } from '@apollo/client';
 import toast, { Toaster } from 'react-hot-toast';
-
-const CreateLinkMutation = gql`
-  mutation (
-    $title: String!
-    $url: String!
-    $imageUrl: String!
-    $category: String!
-    $description: String!
-  ) {
-    createLink(
-      title: $title
-      url: $url
-      imageUrl: $imageUrl
-      category: $category
-      description: $description
-    ) {
-      title
-      url
-      imageUrl
-      category
-      description
-    }
-  }
-`;
+import { useCreateLinkMutation } from '../generated/graphql';
 
 const Admin = () => {
-  const [createLink, { data, loading, error }] =
-    useMutation(CreateLinkMutation);
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm();
+  const [createLink, { loading, error }] = useCreateLinkMutation({
+    onCompleted: () => {
+      reset();
+    }
+  });
 
   // Upload photo function
   const uploadPhoto = async (e) => {
@@ -166,7 +146,6 @@ const Admin = () => {
 };
 
 export const getServerSideProps = async ({ req, res }) => {
-
   const session = await getSession({ req });
 
   if (!session) {
