@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { addApolloState, initializeApollo } from '../../lib/apollo';
-import { AwesomeLink } from '../components/AwesomeLink';
+import { BookmarkLink } from '../components/BookmarkLink';
 import { LinksDocument, useLinksQuery } from '../generated/graphql';
 
 export default function Home() {
@@ -19,14 +19,14 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>Awesome Links</title>
+        <title>Bookmarks Links</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
       <div className='container mx-auto max-w-5xl my-20'>
         <ul className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
           {data?.links.edges.map(({ node }) => (
-            <AwesomeLink
+            <BookmarkLink
               key={node.id}
               imageUrl={node.imageUrl}
               url={node.url}
