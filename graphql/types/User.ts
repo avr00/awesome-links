@@ -35,7 +35,7 @@ export const Me = objectType({
     t.nullable.field('me', {
       type: User,
       resolve: (_, _args, ctx) => {
-        console.log({ ctx });
+        console.log({ ctx, USER: ctx.user });
         // find the user by the id in the context
         const user = ctx.prisma.user.findUnique({
           where: {

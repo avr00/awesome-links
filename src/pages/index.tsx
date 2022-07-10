@@ -1,16 +1,17 @@
 import Head from 'next/head';
 import { addApolloState, initializeApollo } from '../../lib/apollo';
-import { AwesomeLink } from '../../components/AwesomeLink';
+import { AwesomeLink } from '../components/AwesomeLink';
 import { LinksDocument, useLinksQuery } from '../generated/graphql';
 
 export default function Home() {
-  const { data, loading, error, fetchMore } = useLinksQuery({
+  const { data, loading, error, fetchMore, previousData } = useLinksQuery({
     variables: {
       first: 2
-    }
+    },
+    notifyOnNetworkStatusChange: true
   });
 
-  if (loading) return <p>Loading...</p>;
+  if (loading && !previousData) return <p>Loading...</p>;
   if (error) return <p>Oh no... {error.message}</p>;
 
   const { endCursor, hasNextPage } = data.links.pageInfo;
@@ -38,7 +39,8 @@ export default function Home() {
         </ul>
         {hasNextPage ? (
           <button
-            className='px-4 py-2 bg-blue-500 text-white rounded my-10'
+            disabled={loading}
+            className='px-4 py-2 bg-blue-500 text-white rounded my-10 flex items-center gap-2'
             onClick={() => {
               fetchMore({
                 variables: { after: endCursor },
@@ -52,7 +54,18 @@ export default function Home() {
               });
             }}
           >
-            more
+            more{' '}
+            {loading && (
+              <svg
+                className='animate-spin 
+                    h-4 w-4 rounded-full 
+                    bg-transparent 
+                    border-2 border-transparent 
+                  border-t-white 
+                  border-r-white border-opacity-50'
+                viewBox='0 0 24 24'
+           />
+            )}
           </button>
         ) : (
           <p className='my-10 text-center font-medium'>

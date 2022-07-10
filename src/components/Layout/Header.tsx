@@ -1,11 +1,16 @@
 import React from 'react';
+import { useSession, signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
-import { useMeQuery } from '../../src/generated/graphql';
+import { useMeQuery } from '../../generated/graphql';
 
 const Header = () => {
-  const { data } = useMeQuery();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const isUserLoading = status === 'loading';
+  const isUserAuthenticated = status === 'authenticated';
+
+  const { data } = useMeQuery({
+    skip: isUserLoading || !isUserAuthenticated
+  });
 
   const isAdmin = data?.me?.role === 'ADMIN';
 
@@ -41,18 +46,28 @@ const Header = () => {
             </div>
           )}
 
-          {user ? (
+          {isUserLoading ? (
+            <svg
+              className='animate-spin 
+                     h-4 w-4 rounded-full 
+                     bg-transparent 
+                     border-2 border-transparent 
+                   border-t-black 
+                   border-r-black border-opacity-50'
+              viewBox='0 0 24 24'
+            />
+          ) : user ? (
             <div className='flex items-center space-x-5'>
               <Link href='/favorites'>
                 <a className='inline-flex items-center border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0'>
                   My Favorites
                 </a>
               </Link>
-              <Link href='/api/auth/logout'>
+              <button onClick={() => signOut()}>
                 <a className='inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0'>
                   Logout
                 </a>
-              </Link>
+              </button>
               <img
                 alt='profile'
                 className='rounded-full w-12 h-12'
@@ -60,11 +75,11 @@ const Header = () => {
               />
             </div>
           ) : (
-            <Link href='/api/auth/login'>
+            <button onClick={() => signIn()}>
               <a className='inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0'>
                 Login
               </a>
-            </Link>
+            </button>
           )}
         </nav>
       </div>
